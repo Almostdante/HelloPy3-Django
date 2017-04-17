@@ -1,0 +1,14 @@
+{% extends 'movie_list/base.html' %}
+
+{% block content %}
+    <div class = "description">
+        <h1>{{ movie.original_name }}</h1>
+        <p>{{ movie.russian_name }} {{ movie.director }} {{ movie.year }}</p>
+        <img src= {{ movie.poster }}>
+    {% for x in torrents %}
+        <div class="post">
+            <h3>{{ x.link_to_topic }}" {{ x.torrent_size }}</h3>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
