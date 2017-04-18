@@ -7,7 +7,7 @@
         <img src= {{ movie.poster }}>
     {% for x in torrents %}
         <div class="post">
-            <h3>{{ x.link_to_topic }}" {{ x.torrent_size }}</h3>
+            <h1><a href="{{ x.link_to_topic }}">{{ x.link_to_topic }}</a></h1>
         </div>
     {% endfor %}
     </div>

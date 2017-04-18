@@ -7,7 +7,6 @@ from urllib.request import urlopen
 import json
 from urllib.parse import urlencode
 
-
 class Movie(models.Model):
     imdb_id = models.IntegerField(default=0)
     original_name = models.CharField(max_length=200, default='test')
@@ -21,7 +20,6 @@ class Movie(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     poster = models.URLField(default='')
-
 
     def __str__(self):
         return '%s, %s, %s, %s, %s, %s, %s, ' % (self.original_name, self.director, self.year,
