@@ -1,18 +1,6 @@
-    {% extends 'movie_list/base.html' %}
+{% extends 'movie_list/base.html' %}
+{% load render_table from django_tables2 %}
 
     {% block content %}
-        {% for movie in movies %}
-            <div class="post">
-                <a href= "{% url 'movie_page' id=movie.id %}">
-                    <img src= {{ movie.poster }}>
-                </a>
-                <h1><a href="{% url 'movie_page' id=movie.id %}">{{ movie.original_name }}</a></h1>
-                <p>{{ movie.director }} {{ movie.imdb_rating }}</p>
-            <html>
-                <table>
-                    {{ movie.as_table }}
-                </table>
-            </html>
-            </div>
-        {% endfor %}
+        {% render_table movies %}
     {% endblock content %}

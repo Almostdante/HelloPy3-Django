@@ -1,21 +1,59 @@
-import os, django
+import os
+import json
+import django
+from django.utils import timezone
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
 django.setup()
 import Back.tracker
 from movie_list.models import Movie, Torrent
-from datetime import datetime, timezone
+import Back.send_update_to_email
+
+
+me  = 'almostdante@gmail.com'
 x = Back.tracker.rutracker.get_torrents()
-#y = Back.tracker.nnmclub.get_torrents()
+y = Back.tracker.nnmclub.get_torrents()
 
-today_list = x
+today_list = x + y
+js = json.decoder.JSONDecoder()
 
 
-for x in today_list:
-    try:
-        m = Movie.objects.get(original_name=x["movie"], year= x["year"])
-    except:
-        m = Movie.objects.create(original_name=x["movie"], year= x["year"], russian_name = x["russian_name"])
-        m = m.check_imdb()
+for topic in today_list:
+    print (topic)
+    names_plus = ['+++' + name.strip() + '+++' for name in topic['names']]
+    m = 0
+    for name in names_plus:
+        try:
+            m = Movie.objects.get(names__contains=name, year=topic["year"])
+            list_names = js.decode(m.names)
+            list_names.append(name for name in names_plus if name not in list_names)
+            list_names = json.dumps(list_names, ensure_ascii=False)
+            m.names = list_names
+            m.save()
+            if (timezone.now() - m.published_date).days > 7:
+                m.check_imdb()
+            break
+        except:
+            pass
+    if not m:
+        temp = Back.tracker.parse_link(topic['torrent_link'])[2:]
+        if temp:
+            try:
+                m = Movie.objects.get(imdb_rating=temp)
+                if (timezone.now() - m.published_date).days > 7:
+                    m.check_imdb()
+            except:
+                m = Movie.objects.create(imdb_id=temp, names=json.dumps(names_plus, ensure_ascii=False),
+                                         year=topic["year"])
+                m.check_imdb()
+        else:
+            m = Movie.objects.create(names=json.dumps(names_plus, ensure_ascii=False), year=topic["year"])
+            m.check_imdb()
     if m.imdb_rating > 6.9:
-        Torrent.objects.create(movie_id = m, torrent_size = x["size"], link_to_topic = x["torrent_link"],
-                               link_to_torrent_download = x["download_link"])
+        Torrent.objects.create(movie_id=m, torrent_size=topic["size"], torrent_id=topic['id'],
+                               tracker=topic['tracker'], link_to_topic=topic["torrent_link"],
+                               link_to_torrent_download=topic["torrent_download_link"])
+    elif m.imdb_rating == 0:
+        print(topic)
+        for x in topic['names']:
+            print(x)
+Back.send_update_to_email.send_update(me)

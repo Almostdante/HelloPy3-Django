@@ -1,21 +1,13 @@
 {% load staticfiles %}
+
 <html>
 <head>
     <title>My Super Movie List</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="{% static 'css/list.css' %}">
 </head>
 <body>
     <div class="page-header">
         <h1><a href="/">My Super Movie List</a></h1>
     </div>
-    <div class="content container">
-        <div class="row">
-            <div class="col-md-8">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-    </div>
+    {% block content %}
+    {% endblock %}
 </body>

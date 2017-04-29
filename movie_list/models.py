@@ -1,16 +1,18 @@
 # encoding=utf8
-
+import re
+import json
 from django.db import models
 from django.utils import timezone
-import re
+from django.shortcuts import get_object_or_404
 from urllib.request import urlopen
-import json
 from urllib.parse import urlencode
+
 
 class Movie(models.Model):
     imdb_id = models.IntegerField(default=0)
     original_name = models.CharField(max_length=200, default='test')
     russian_name = models.CharField(max_length=200, default='test')
+    names = models.CharField(max_length=500, default='test')
     director = models.CharField(max_length=200, default='test')
     year = models.IntegerField(default=0)
     imdb_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0)
@@ -20,6 +22,9 @@ class Movie(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     poster = models.URLField(default='')
+    plot = models.CharField(max_length=1000, default='test')
+    genre = models.CharField(max_length=500, default='test')
+
 
     def __str__(self):
         return '%s, %s, %s, %s, %s, %s, %s, ' % (self.original_name, self.director, self.year,
@@ -30,41 +35,56 @@ class Movie(models.Model):
         self.save()
 
     def check_imdb(self):
-        if self.imdb_id and (timezone.now() - self.created_date).days > 7:
-            url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'i':self.imdb_id}))
-            urlll = urlopen(url).read()
-            js = json.loads(urlll)
+        js = json.decoder.JSONDecoder()
+        list_names = js.decode(self.names)
+        for name in list_names:
+            if re.search('[а-яА-Я]+', name):
+                if self.russian_name == 'test':
+                    self.russian_name = name.strip('+')
+                list_names.remove(name)
+        if self.imdb_id:
+            url = '{}?{}&plot=full'.format('http://www.omdbapi.com/', urlencode({'i': self.imdb_id.rjust(9, "0")}))
+            url_read = urlopen(url).read()
+            js = json.loads(url_read)
             if js[u'Response'] == 'True':
                 self.director = str(js['Director'])
+                self.original_name = str(js['Title'])
                 if js['imdbRating'] != 'N/A':
                     self.imdb_rating = float(js['imdbRating'])
                     self.imdb_votes = int(js['imdbVotes'].split(',')[0])
                 if js['Metascore'].isdigit():
                     self.metascore = int(js['Metascore'])
                 self.poster = js['Poster']
-                self.save()
-        elif not self.imdb_id:
-            url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'t':re.sub(r"\s+", '+', self.original_name), 'y':self.year}))
-            urlll = urlopen(url).read()
-            js = json.loads(urlll)
-            if js[u'Response'] == 'True':
-                try:
-                    m = Movie.objects.get(imdb_id=int(js['imdbID'][2:]))
-                    print (m)
-                    self.delete()
-                    return m
-                except:
+                self.plot = str(js['Plot'])
+                self.genre = str(js['Genre'])
+        else:
+            for name in list_names:
+                url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'t': re.sub(r"\s+", '+', name.strip('+')),
+                                                                           'y': self.year}))
+                url_read = urlopen(url).read()
+                js = json.loads(url_read)
+                if js[u'Response'] == 'True':
                     self.imdb_id = int(js['imdbID'][2:])
                     self.director = str(js['Director'])
+                    self.original_name = str(js['Title'])
                     if js['imdbRating'] != 'N/A':
                         self.imdb_rating = float(js['imdbRating'])
                         self.imdb_votes = int(js['imdbVotes'].split(',')[0])
                     if js['Metascore'].isdigit():
                         self.metascore = int(js['Metascore'])
                     self.poster = js['Poster']
-                    self.save()
+                    self.plot = str(js['Plot'])
+                    self.genre = str(js['Genre'])
+                    break
+        self.published_date = timezone.now()
+        self.save()
         return self
 
+    def get_torrents(self):
+        return  Torrent.objects.filter(movie_id = self.id)
+
+    def get_image(self):
+        return '<img src="%s" />'% self.poster
 
 
 class Torrent(models.Model):
@@ -74,6 +94,8 @@ class Torrent(models.Model):
     movie_id = models.ForeignKey(Movie)
     subtitles = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
+    torrent_id = models.IntegerField(default=0)
+    tracker = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return '%s, %s, ' % (self.movie_id, self.link_to_topic)

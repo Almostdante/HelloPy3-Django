@@ -2,11 +2,33 @@
 
 import bs4
 import re
+import os
+import django
 from urllib.request import HTTPCookieProcessor, build_opener
 from urllib.parse import urlencode
-import os, django
+from movie_list.models import Torrent
+from datetime import datetime
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
 django.setup()
+
+def parse_link(link):
+    opener = build_opener(HTTPCookieProcessor())
+    page = opener.open(link)
+    if link.startswith('http://rutr'):
+        soup = bs4.BeautifulSoup(page, "html.parser")
+    else:
+        soup = bs4.BeautifulSoup(page, "html.parser")
+    post = str(soup.findAll(['div', 'span'], {'class': ['postbody', 'post_body']}))
+    try:
+        id = str(re.search(r'(tt(\d{7}))', post).group(0))
+    except:
+        id = 'tt'
+#    sub = True if (
+#    re.search(r'титр.{,70}(\w*?(усск|rus|Rus))', post) or re.search(r'(усск|rus|Rus).{,18}(\w*?титр\w*?)',
+#                                                                                 post)) else False
+    return id
+
 
 class Tracker:
 
@@ -15,51 +37,47 @@ class Tracker:
         self.domain = domain
         self.gap = 0
         self.page_size = 50
-        self.current_last_time = 0
-        self.previous_last_time = 0
+        self.last_time = Torrent.objects.filter(tracker = domain).latest('created_date').created_date.replace(tzinfo=None)
+        self.current_url = ''
 
     def get_torrents(self):
         int_result = []
         opener = build_opener(HTTPCookieProcessor())
         opener.open(self.login_url, urlencode(self.credentials).encode())
-        current_url = self.start_url
-        x = True
-        while x:
-            current_page = opener.open(current_url)
+        self.current_url = self.start_url
+        while True:
+            print(self.current_url)
+            current_page = opener.open(self.current_url)
             soup = bs4.BeautifulSoup(current_page, "html.parser")
             topics = soup.findAll(*self.how_to_find_topics)
             for topic in topics:
                 torrent_time = int(topic.find(*self.how_to_find_time).u.contents[0])
-                self.current_last_time = max(torrent_time, self.current_last_time)
-                if torrent_time < self.previous_last_time:
-                    x = False
+                if (self.last_time - datetime.fromtimestamp(torrent_time)).total_seconds() > 0:
                     break
-                try:
-                    torrent_size = round(int(topic.find(*self.how_to_find_size).u.contents[0])/2.0**30, 2)
-                    torrent_title = topic.find(*self.how_to_find_name_year_id)
-                    torrent_movie_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
-                    torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
-                    torrent_link = self.link_to_torrent_url + torrent_id
-                    torrent_download_link = self.link_to_download + torrent_id
-                    torrent_russian_name = str(torrent_title.contents[0]).split('(')[0].split('/')[0].strip('<b>')
-                except:
-                    continue
-                for title in str(torrent_title.contents[0]).split('(')[0].split('/'):
-                    if re.search('[a-zA-Z0-9]+', title) and not (title.startswith('<') or re.search('[а-яА-Я]+', title)):
-                       int_result.append({'russian_name': torrent_russian_name, 'torrent_link': torrent_link,
-                                           'download_link': torrent_download_link, 'movie': title.strip(),
-                                           'year': torrent_movie_year, 'size': torrent_size})
-            self.gap += self.page_size
-            if self.gap > 200:
-                x = False
-                break
-            next = soup.findAll(self.how_to_find_next_page)
-            next_search = re.search(r'search_id=(\w+)', str(next))
-            if next_search:
-                search_id = next_search.group(1)
-                current_url = self.search_url % (search_id, self.gap)
+                torrent_size = round(int(topic.find(*self.how_to_find_size).u.contents[0])/2.0**30, 2)
+                torrent_title = topic.find(*self.how_to_find_name_year_id)
+                torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
+                torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
+                torrent_link = self.link_to_torrent_url + torrent_id
+                torrent_download_link = self.link_to_download + torrent_id
+                torrent_names = str(torrent_title).split('(')[0].split('>')[-1].split(' / ')
+                int_result.append({'names': reversed(torrent_names), 'id': torrent_id, 'tracker': self.domain,
+                                   'year': torrent_year, 'size': torrent_size, 'torrent_link': torrent_link,
+                                   'torrent_download_link': torrent_download_link})
             else:
-                x = False
+                if self.gap > 399:
+                    break
+                self.gap += self.page_size
+                next = soup.findAll(self.how_to_find_next_page)
+                next_search = re.search(r'search_id=(\w+)', str(next))
+                if next_search:
+                    search_id = next_search.group(1)
+                    self.current_url = self.search_url % (search_id, self.gap)
+                else:
+                    break
+                continue
+            break
+
         return int_result
 
 
@@ -86,7 +104,7 @@ nnmclub.how_to_find_time = ('td', {'title': 'Добавлено'})
 nnmclub.how_to_find_size = ('td', {'class': 'gensmall'})
 nnmclub.link_to_torrent_url = 'http://%s/forum/viewtopic.php?t=' % nnmclub.domain
 nnmclub.link_to_download = 'http://%s/forum/download.php?id=' % nnmclub.domain
-nnmclub.how_to_find_name_year_id = ('a', {'class': ('genmed topictitle', 'seedmed topictitle')})
+nnmclub.how_to_find_name_year_id = ('a', {'class': ('genmed topictitle', 'seedmed topictitle', 'genmed', 'genmed topicpremod')})
 nnmclub.search_url = 'http://nnmclub.to/forum/tracker.php?search_id=%s&start=%s'
 nnmclub.how_to_find_next_page = ('span', {'class': 'nav'})
 nnmclub.movie_year_regexp = '\((\d{4})\)'

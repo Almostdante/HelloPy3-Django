@@ -1,14 +1,15 @@
 {% extends 'movie_list/base.html' %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
     <div class = "description">
-        <h1>{{ movie.original_name }}</h1>
-        <p>{{ movie.russian_name }} {{ movie.director }} {{ movie.year }}</p>
-        <img src= {{ movie.poster }}>
-    {% for x in torrents %}
-        <div class="post">
-            <h1><a href="{{ x.link_to_topic }}">{{ x.link_to_topic }}</a></h1>
-        </div>
-    {% endfor %}
+        <h1>{{ movie.original_name }} ({{ movie.russian_name }}) </h1>
+        <h3> {{ movie.director }}</h3>
+        <h3> {{ movie.year }}</h3>
+        <p>
+                {% render_table torrents %}
+
+        <img src= {{ movie.poster }} align="right">
+        </p>
     </div>
 {% endblock content %}
