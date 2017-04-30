@@ -2,22 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e19056f9-2c9e-48b9-acbb-0ec73748d745" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Back/send_update_to_email.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/movie_list/migrations/0010_auto_20170429_2307.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/movie_list/tables.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/movie_list/email.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Back/check_for_updates.py" afterPath="$PROJECT_DIR$/Back/check_for_updates.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Back/tracker.py" afterPath="$PROJECT_DIR$/Back/tracker.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FirstSite/settings.py" afterPath="$PROJECT_DIR$/FirstSite/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/movie_list/apps.py" afterPath="$PROJECT_DIR$/movie_list/apps.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/movie_list/models.py" afterPath="$PROJECT_DIR$/movie_list/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/movie_list/urls.py" afterPath="$PROJECT_DIR$/movie_list/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/movie_list/views.py" afterPath="$PROJECT_DIR$/movie_list/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/movie_list/base.html" afterPath="$PROJECT_DIR$/templates/movie_list/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/movie_list/list.html" afterPath="$PROJECT_DIR$/templates/movie_list/list.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/movie_list/movie_page.html" afterPath="$PROJECT_DIR$/templates/movie_list/movie_page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -66,7 +51,7 @@
         <entry file="file://$PROJECT_DIR$/Back/check_for_updates.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="601">
-              <caret line="57" column="20" lean-forward="true" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
+              <caret line="57" column="20" lean-forward="false" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -78,7 +63,7 @@
         <entry file="file://$PROJECT_DIR$/templates/movie_list/email.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
-              <caret line="1" column="43" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <caret line="1" column="43" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -87,8 +72,8 @@
       <file leaf-file-name="base.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/movie_list/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="6" lean-forward="true" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+            <state relative-caret-position="180">
+              <caret line="12" column="7" lean-forward="true" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -98,7 +83,7 @@
         <entry file="file://$PROJECT_DIR$/templates/movie_list/list.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
-              <caret line="5" column="26" lean-forward="true" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
+              <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -120,7 +105,7 @@
         <entry file="file://$PROJECT_DIR$/movie_list/views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="210">
-              <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
                 <element signature="e#0#54#0" expanded="true" />
               </folding>
@@ -684,7 +669,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492503515085</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="first try)">
+      <created>1493503633536</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1493503633536</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1110,7 +1102,7 @@
     <entry file="file://$PROJECT_DIR$/movie_list/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
-          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
             <element signature="e#0#54#0" expanded="true" />
           </folding>
@@ -1128,7 +1120,7 @@
     <entry file="file://$PROJECT_DIR$/Back/check_for_updates.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="601">
-          <caret line="57" column="20" lean-forward="true" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
+          <caret line="57" column="20" lean-forward="false" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -1138,7 +1130,7 @@
     <entry file="file://$PROJECT_DIR$/templates/movie_list/email.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="1" column="43" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <caret line="1" column="43" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1176,15 +1168,15 @@
     <entry file="file://$PROJECT_DIR$/templates/movie_list/list.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-          <caret line="5" column="26" lean-forward="true" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
+          <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/movie_list/base.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="6" lean-forward="true" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+        <state relative-caret-position="180">
+          <caret line="12" column="7" lean-forward="true" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
           <folding />
         </state>
       </provider>
