@@ -44,7 +44,9 @@ class Movie(models.Model):
                 list_names.remove(name)
         if self.imdb_id:
             url = '{}?{}&plot=full'.format('http://www.omdbapi.com/', urlencode({'i': self.imdb_id.rjust(9, "0")}))
-            url_read = urlopen(url).read()
+            url_read = urlopen(url).read().decode('utf8')
+            print (url_read)
+            print (type(url_read))
             js = json.loads(url_read)
             if js[u'Response'] == 'True':
                 self.director = str(js['Director'])
@@ -61,7 +63,8 @@ class Movie(models.Model):
             for name in list_names:
                 url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'t': re.sub(r"\s+", '+', name.strip('+')),
                                                                            'y': self.year}))
-                url_read = urlopen(url).read()
+                url_read = urlopen(url).read().decode('utf8')
+                print (url_read, type(url_read))
                 js = json.loads(url_read)
                 if js[u'Response'] == 'True':
                     self.imdb_id = int(js['imdbID'][2:])

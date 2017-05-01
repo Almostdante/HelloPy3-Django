@@ -1,7 +1,9 @@
 import os
+import sys
 import json
 import django
 from django.utils import timezone
+sys.path.append("/home/hello/HelloPy3-Django")
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
 django.setup()
 import Back.tracker
