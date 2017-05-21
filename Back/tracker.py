@@ -56,11 +56,7 @@ class Tracker:
                     break
                 torrent_size = round(int(topic.find(*self.how_to_find_size).u.contents[0])/2.0**30, 2)
                 torrent_title = topic.find(*self.how_to_find_name_year_id)
-                try:
-                    torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
-                except:
-                    torrent_year = 0
-                    print (torrent_title)
+                torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
                 torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
                 torrent_link = self.link_to_torrent_url + torrent_id
                 torrent_download_link = self.link_to_download + torrent_id
@@ -111,7 +107,7 @@ nnmclub.link_to_download = 'http://%s/forum/download.php?id=' % nnmclub.domain
 nnmclub.how_to_find_name_year_id = ('a', {'class': ('genmed topictitle', 'seedmed topictitle', 'genmed', 'genmed topicpremod')})
 nnmclub.search_url = 'http://nnmclub.to/forum/tracker.php?search_id=%s&start=%s'
 nnmclub.how_to_find_next_page = ('span', {'class': 'nav'})
-nnmclub.movie_year_regexp = '\((\d{4})\)'
+nnmclub.movie_year_regexp = '\((\d{4})[\-\)]'
 
 if __name__ == '__main__':
     print(nnmclub.get_torrents())
