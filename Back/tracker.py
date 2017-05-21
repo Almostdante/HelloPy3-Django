@@ -52,11 +52,15 @@ class Tracker:
             topics = soup.findAll(*self.how_to_find_topics)
             for topic in topics:
                 torrent_time = int(topic.find(*self.how_to_find_time).u.contents[0])
-                if (self.last_time - datetime.fromtimestamp(torrent_time)).total_seconds() > 0:
+                if (self.last_time - datetime.fromtimestamp(torrent_time)).total_seconds() > 180:
                     break
                 torrent_size = round(int(topic.find(*self.how_to_find_size).u.contents[0])/2.0**30, 2)
                 torrent_title = topic.find(*self.how_to_find_name_year_id)
-                torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
+                try:
+                    torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
+                except:
+                    torrent_year = 0
+                    print (torrent_title)
                 torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
                 torrent_link = self.link_to_torrent_url + torrent_id
                 torrent_download_link = self.link_to_download + torrent_id
