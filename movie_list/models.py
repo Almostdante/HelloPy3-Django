@@ -43,7 +43,7 @@ class Movie(models.Model):
                     self.russian_name = name.strip('+')
                 list_names.remove(name)
         if self.imdb_id:
-            url = '{}?{}&plot=full'.format('http://www.omdbapi.com/', urlencode({'i': self.imdb_id.rjust(9, "0"), 'apikey': 'fbe4383c'}))
+            url = '{}?{}&plot=full'.format('http://www.omdbapi.com/', urlencode({'i': self.imdb_id.rjust(9, "0"), 'apikey': 'cfb35c43'}))
             url_read = urlopen(url).read().decode('utf8')
             print (url_read)
             print (type(url_read))
@@ -62,7 +62,7 @@ class Movie(models.Model):
         else:
             for name in list_names:
                 url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'t': re.sub(r"\s+", '+', name.strip('+')),
-                                                                           'y': self.year, 'apikey': 'fbe4383c'}))
+                                                                           'y': self.year, 'apikey': 'cfb35c43'}))
                 url_read = urlopen(url).read().decode('utf8')
                 print (url_read, type(url_read))
                 js = json.loads(url_read)
