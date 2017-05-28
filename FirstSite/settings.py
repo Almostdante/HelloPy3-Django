@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'movie_list',
-    'django_tables2'
+    'django_tables2',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
