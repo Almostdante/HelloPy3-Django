@@ -25,7 +25,7 @@ SECRET_KEY = '&e5_e*a&ve1r8rm4_xm1_g2hp_g$6_*j@-(3b#e&f4isk0w^)1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['didyoumiss.me']
 
 
 # Application definition
