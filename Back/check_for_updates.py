@@ -20,7 +20,6 @@ js = json.decoder.JSONDecoder()
 
 
 for topic in today_list:
-    print (topic)
     names_plus = ['+++' + name.strip() + '+++' for name in topic['names']]
     m = 0
     for name in names_plus:

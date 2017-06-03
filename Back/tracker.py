@@ -46,7 +46,6 @@ class Tracker:
         opener.open(self.login_url, urlencode(self.credentials).encode())
         self.current_url = self.start_url
         while True:
-            print(self.current_url)
             current_page = opener.open(self.current_url)
             soup = bs4.BeautifulSoup(current_page, "html.parser")
             topics = soup.findAll(*self.how_to_find_topics)
@@ -61,6 +60,7 @@ class Tracker:
                 except:
                     print ("блядь, да заебал уже!!")
                     print (topic)
+                    continue
                 torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
                 torrent_link = self.link_to_torrent_url + torrent_id
                 torrent_download_link = self.link_to_download + torrent_id
