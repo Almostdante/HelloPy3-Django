@@ -109,7 +109,7 @@ nnmclub.how_to_find_size = ('td', {'class': 'gensmall'})
 nnmclub.link_to_torrent_url = 'http://%s/forum/viewtopic.php?t=' % nnmclub.domain
 nnmclub.link_to_download = 'http://%s/forum/download.php?id=' % nnmclub.domain
 nnmclub.how_to_find_name_year_id = ('a', {'class': ('genmed topictitle', 'seedmed topictitle', 'genmed', 'genmed topicpremod')})
-nnmclub.search_url = 'http://nnmclub.to/forum/tracker.php?search_id=%s&start=%s'
+nnmclub.search_url = 'http://nnm-club.name/forum/tracker.php?search_id=%s&start=%s'
 nnmclub.how_to_find_next_page = ('span', {'class': 'nav'})
 nnmclub.movie_year_regexp = '\((\d{4})[\-\)]'
 
