@@ -99,7 +99,7 @@ rutracker.search_url = 'http://rutracker.org/forum/tracker.php?search_id=%s&star
 rutracker.how_to_find_next_page = ('a', {'class': 'pg'})
 rutracker.movie_year_regexp = '\[(\d{4})'
 
-nnmclub = Tracker(2, 'nnmclub.to')
+nnmclub = Tracker(2, 'nnm-club.name')
 nnmclub.credentials = {'username': b'almostdante', 'password': b'Welcome2012', 'login': 'Вход', }
 nnmclub.login_url = 'http://%s/forum/login.php' % nnmclub.domain
 nnmclub.start_url = 'http://%s/forum/tracker.php?f=954,885,912,227,661&o=1&tm=14' % nnmclub.domain
