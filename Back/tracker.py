@@ -57,6 +57,9 @@ class Tracker:
                 torrent_title = topic.find(*self.how_to_find_name_year_id)
                 try:
                     torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
+                    if torrent_year < 2000:
+                        continue
+
                 except:
                     print ("блядь, да заебал уже!!")
                     print (topic)
