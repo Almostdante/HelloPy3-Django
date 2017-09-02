@@ -44,8 +44,9 @@ class Movie(models.Model):
                 list_names.remove(name)
         if self.imdb_id:
             url = '{}?{}&plot=full'.format('http://www.omdbapi.com/', urlencode({'i': self.imdb_id.rjust(9, "0"), 'apikey': '7a6c480b'}))
+            print (url)
             url_read = urlopen(url).read().decode('utf8')
-            print (url, url_read)
+            print (url_read)
             js = json.loads(url_read)
             if js[u'Response'] == 'True':
                 self.director = str(js['Director'])
