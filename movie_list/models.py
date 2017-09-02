@@ -63,8 +63,9 @@ class Movie(models.Model):
             for name in list_names:
                 url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'t': re.sub(r"\s+", '+', name.strip('+')),
                                                                            'y': self.year, 'apikey': '7a6c480b'}))
+                print(url)
                 url_read = urlopen(url).read().decode('utf8')
-                print (url, url_read)
+                print(url_read)
                 js = json.loads(url_read)
                 if js[u'Response'] == 'True':
                     self.imdb_id = int(js['imdbID'][2:])
