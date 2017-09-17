@@ -4,6 +4,7 @@ import bs4
 import re
 import os
 import django
+import time
 from urllib.request import HTTPCookieProcessor, build_opener
 from urllib.parse import urlencode
 from movie_list.models import Torrent
@@ -13,6 +14,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
 django.setup()
 
 def parse_link(link):
+    time.sleep(0.3)
+    print (link)
     opener = build_opener(HTTPCookieProcessor())
     page = opener.open(link)
     if link.startswith('http://rutr'):

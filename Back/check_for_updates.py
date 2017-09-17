@@ -55,6 +55,4 @@ for topic in today_list:
                                link_to_torrent_download=topic["torrent_download_link"])
     elif m.imdb_rating == 0:
         print(topic)
-        for x in topic['names']:
-            print(x)
 Back.send_update_to_email.send_update(me)
