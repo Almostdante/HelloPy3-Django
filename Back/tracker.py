@@ -5,32 +5,35 @@ import re
 import os
 import django
 import time
-from urllib.request import HTTPCookieProcessor, build_opener
+from urllib.request import HTTPCookieProcessor, build_opener, urlopen
 from urllib.parse import urlencode
 from movie_list.models import Torrent
 from datetime import datetime
+from socket import timeout
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
 django.setup()
 
+
 def parse_link(link):
-    time.sleep(0.3)
-    print (link)
-    opener = build_opener(HTTPCookieProcessor())
-    page = opener.open(link)
+    time.sleep(0.5)
+    try:
+        page = urlopen(link, timeout=15)
+    except (TimeoutError, timeout):
+        print(link)
+        print('Link parse on tracker fucked up!')
+        trnt_id = 'tt'
+        return trnt_id
     if link.startswith('http://rutr'):
         soup = bs4.BeautifulSoup(page, "html.parser")
     else:
         soup = bs4.BeautifulSoup(page, "html.parser")
     post = str(soup.findAll(['div', 'span'], {'class': ['postbody', 'post_body']}))
     try:
-        id = str(re.search(r'(tt(\d{7}))', post).group(0))
+        trnt_id = str(re.search(r'(tt(\d{7}))', post).group(0))
     except:
-        id = 'tt'
-#    sub = True if (
-#    re.search(r'титр.{,70}(\w*?(усск|rus|Rus))', post) or re.search(r'(усск|rus|Rus).{,18}(\w*?титр\w*?)',
-#                                                                                 post)) else False
-    return id
+        trnt_id = 'tt'
+    return trnt_id
 
 
 class Tracker:
@@ -40,7 +43,7 @@ class Tracker:
         self.domain = domain
         self.gap = 0
         self.page_size = 50
-        self.last_time = Torrent.objects.filter(tracker = domain).latest('created_date').created_date.replace(tzinfo=None)
+        self.last_time = Torrent.objects.filter(tracker=domain).latest('created_date').created_date.replace(tzinfo=None)
         self.current_url = ''
 
     def get_torrents(self):
@@ -49,7 +52,12 @@ class Tracker:
         opener.open(self.login_url, urlencode(self.credentials).encode())
         self.current_url = self.start_url
         while True:
-            current_page = opener.open(self.current_url)
+            time.sleep(1.5)
+            try:
+                current_page = opener.open(self.current_url, timeout=15)
+            except (TimeoutError, timeout):
+                print('Tracker fucked up:' + self.domain)
+                break
             soup = bs4.BeautifulSoup(current_page, "html.parser")
             topics = soup.findAll(*self.how_to_find_topics)
             for topic in topics:
@@ -64,8 +72,8 @@ class Tracker:
                         continue
 
                 except:
-                    print ("блядь, да заебал уже!!")
-                    print (torrent_title)
+                    print("блядь, да заебал уже!!")
+                    print(torrent_title)
                     continue
                 torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
                 torrent_link = self.link_to_torrent_url + torrent_id
@@ -78,8 +86,8 @@ class Tracker:
                 if self.gap > 399:
                     break
                 self.gap += self.page_size
-                next = soup.findAll(self.how_to_find_next_page)
-                next_search = re.search(r'search_id=(\w+)', str(next))
+                next_page = soup.findAll(self.how_to_find_next_page)
+                next_search = re.search(r'search_id=(\w+)', str(next_page))
                 if next_search:
                     search_id = next_search.group(1)
                     self.current_url = self.search_url % (search_id, self.gap)
@@ -94,7 +102,7 @@ class Tracker:
 rutracker = Tracker(1, 'rutracker.org')
 rutracker.credentials = {'login_username': b'cheshiremajor', 'login_password': b'ZNt,zK.,k.', 'login': 'Вход', }
 rutracker.login_url = 'http://%s/forum/login.php' % rutracker.domain
-rutracker.start_url = 'http://%s/forum/tracker.php?f=2198,2199,2201,2339,313,930&o=1&tm=14' % rutracker.domain
+rutracker.start_url = 'http://%s/forum/tracker.php?f=2198,2199,2201,2339,313,930&o=1&tm=32' % rutracker.domain
 rutracker.how_to_find_topics = ('tr', {'class': 'tCenter hl-tr'})
 rutracker.how_to_find_time = ('td', {'class': 'row4 small nowrap'})
 rutracker.how_to_find_size = ('td', {'class': 'row4 small nowrap tor-size'})
@@ -108,7 +116,7 @@ rutracker.movie_year_regexp = '\[(\d{4})'
 nnmclub = Tracker(2, 'nnm-club.name')
 nnmclub.credentials = {'username': b'almostdante', 'password': b'Welcome2012', 'login': 'Вход', }
 nnmclub.login_url = 'http://%s/forum/login.php' % nnmclub.domain
-nnmclub.start_url = 'http://%s/forum/tracker.php?f=954,885,912,227,661&o=1&tm=14' % nnmclub.domain
+nnmclub.start_url = 'http://%s/forum/tracker.php?f=954,885,912,227,661&o=1&tm=30' % nnmclub.domain
 nnmclub.how_to_find_topics = ('tr', {'class': ('prow1', 'prow2')})
 nnmclub.how_to_find_time = ('td', {'title': 'Добавлено'})
 nnmclub.how_to_find_size = ('td', {'class': 'gensmall'})
