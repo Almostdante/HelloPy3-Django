@@ -2,13 +2,14 @@ import os
 import sys
 import json
 import django
+sys.path.append("/home/hello/HelloPy3-Django")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
+django.setup()
 import Back.send_update_to_email
 from Back.tracker import rutracker, nnmclub, parse_link
 from django.utils import timezone
 from movie_list.models import Movie, Torrent
-sys.path.append("/home/hello/HelloPy3-Django")
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
-django.setup()
+
 
 
 me = 'almostdante@gmail.com'
