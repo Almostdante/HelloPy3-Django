@@ -1,10 +1,12 @@
 # encoding=utf8
 import re
 import json
+import time
 from django.db import models
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
 from urllib.request import urlopen
+from urllib.error import URLError
+from socket import timeout
 from urllib.parse import urlencode
 
 
@@ -25,7 +27,6 @@ class Movie(models.Model):
     plot = models.CharField(max_length=1000, default='test')
     genre = models.CharField(max_length=500, default='test')
 
-
     def __str__(self):
         return '%s, %s, %s, %s, %s, %s, %s, ' % (self.original_name, self.director, self.year,
                                                  self.imdb_id, self.imdb_rating, self.imdb_votes, self.metascore)
@@ -43,10 +44,14 @@ class Movie(models.Model):
                     self.russian_name = name.strip('+')
                 list_names.remove(name)
         if self.imdb_id:
-            url = '{}?{}&plot=full'.format('http://www.omdbapi.com/', urlencode({'i': self.imdb_id.rjust(9, "0"), 'apikey': '7a6c480b'}))
-            print (url)
-            url_read = urlopen(url).read().decode('utf8')
-            print (url_read)
+            time.sleep(2.5)
+            url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'i': str(self.imdb_id).rjust(9, "0"), 'apikey': '7a6c480b'}))
+            try:
+                url_read = urlopen(url, timeout=15).read().decode('utf8')
+            except (TimeoutError, timeout):
+                print(url)
+                print('OMDB timeout, old movie!')
+                url_read = '{"Response":"False","Error":"Movie not found!"}'
             js = json.loads(url_read)
             if js[u'Response'] == 'True':
                 self.director = str(js['Director'])
@@ -61,11 +66,15 @@ class Movie(models.Model):
                 self.genre = str(js['Genre'])
         else:
             for name in list_names:
+                time.sleep(2.5)
                 url = '{}?{}'.format('http://www.omdbapi.com/', urlencode({'t': re.sub(r"\s+", '+', name.strip('+')),
                                                                            'y': self.year, 'apikey': '7a6c480b'}))
-                print(url)
-                url_read = urlopen(url).read().decode('utf8')
-                print(url_read)
+                try:
+                    url_read = urlopen(url, timeout=15).read().decode('utf8')
+                except (TimeoutError, timeout):
+                    print(url)
+                    print('OMDB timeout, new movie!')
+                    continue
                 js = json.loads(url_read)
                 if js[u'Response'] == 'True':
                     self.imdb_id = int(js['imdbID'][2:])
@@ -80,15 +89,18 @@ class Movie(models.Model):
                     self.plot = str(js['Plot'])
                     self.genre = str(js['Genre'])
                     break
+                else:
+                    print(url)
+                    print('Not found on OMDB')
         self.published_date = timezone.now()
         self.save()
         return self
 
     def get_torrents(self):
-        return  Torrent.objects.filter(movie_id = self.id)
+        return Torrent.objects.filter(movie_id=self.id)
 
     def get_image(self):
-        return '<img src="%s" />'% self.poster
+        return '<img src="%s" />'%self.poster
 
 
 class Torrent(models.Model):
