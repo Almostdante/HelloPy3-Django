@@ -57,12 +57,12 @@ class Tracker:
                 torrent_title = topic.find(*self.how_to_find_name_year_id)
                 try:
                     torrent_year = re.search(self.movie_year_regexp, str(torrent_title)).group(1)
-                    if torrent_year < 2000:
+                    if int(torrent_year) < 2000:
                         continue
 
                 except:
                     print ("блядь, да заебал уже!!")
-                    print (topic)
+                    print (torrent_title)
                     continue
                 torrent_id = str(re.search('\d+', torrent_title['href']).group(0))
                 torrent_link = self.link_to_torrent_url + torrent_id
