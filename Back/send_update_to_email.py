@@ -20,7 +20,6 @@ def send_update(recipient):
     RequestConfig(request).configure(m)
     msg_html = render_to_string('movie_list/email.html', context={'movies' :m}, request=request)
     msg_txt = 'txt'
-    print (msg_html, type(msg_html), to)
     send_mail(
         'Fresh Movies',
         msg_txt,
