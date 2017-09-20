@@ -3,12 +3,17 @@
 
     {% block content %}
         <form action=? method=”get”>
-            {{ form }}
+            {{ main_form }}
             <input id="Year" type="text" name="Year" value="Min Release Year">
         </form>
         <form action=? method=”get”>
-            {{ form }}
+            {{ main_form }}
             <input id="Name" type="text" name="Name" value="Search By Title">
         </form>
+        <form action=? method=”get”>
+            {{ genre_form }}
+            <input type="submit">
+        </form>
+
         {% render_table movies %}
     {% endblock content %}
