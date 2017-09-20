@@ -49,7 +49,14 @@ class Tracker:
     def get_torrents(self):
         int_result = []
         opener = build_opener(HTTPCookieProcessor())
-        opener.open(self.login_url, urlencode(self.credentials).encode())
+        try:
+            opener.open(self.login_url, urlencode(self.credentials).encode())
+        except (TimeoutError, timeout):
+            print('Tracker login fucked up:' + self.domain)
+            try:
+                opener.open(self.login_url, urlencode(self.credentials).encode())
+            except (TimeoutError, timeout):
+                print('Tracker login fucked up twice:' + self.domain)
         self.current_url = self.start_url
         while True:
             time.sleep(1.5)
@@ -57,7 +64,11 @@ class Tracker:
                 current_page = opener.open(self.current_url, timeout=15)
             except (TimeoutError, timeout):
                 print('Tracker fucked up:' + self.domain)
-                break
+                try:
+                    opener.open(self.login_url, urlencode(self.credentials).encode())
+                except (TimeoutError, timeout):
+                    print('Tracker login fucked up twice:' + self.domain)
+                    break
             soup = bs4.BeautifulSoup(current_page, "html.parser")
             topics = soup.findAll(*self.how_to_find_topics)
             for topic in topics:
