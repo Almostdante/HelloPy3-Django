@@ -43,7 +43,7 @@ class Tracker:
         self.domain = domain
         self.gap = 0
         self.page_size = 50
-        self.last_time = Torrent.objects.filter(tracker=domain).latest('created_date').created_date.replace(tzinfo=None)
+        self.last_time = Torrent.objects.filter(tracker__startswith=domain[:8]).latest('created_date').created_date.replace(tzinfo=None)
         self.current_url = ''
 
     def get_torrents(self):
