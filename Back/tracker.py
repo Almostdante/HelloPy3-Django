@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 from movie_list.models import Torrent
 from datetime import datetime
 from socket import timeout
+import html5lib
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstSite.settings")
 django.setup()
@@ -25,9 +26,9 @@ def parse_link(link):
         trnt_id = 'tt'
         return trnt_id
     if link.startswith('http://rutr'):
-        soup = bs4.BeautifulSoup(page, "html.parser")
+        soup = bs4.BeautifulSoup(page, "html5lib")
     else:
-        soup = bs4.BeautifulSoup(page, "html.parser")
+        soup = bs4.BeautifulSoup(page, "html5lib")
     post = str(soup.findAll(['div', 'span'], {'class': ['postbody', 'post_body']}))
     try:
         trnt_id = str(re.search(r'(tt(\d{7}))', post).group(0))
