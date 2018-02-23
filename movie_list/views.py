@@ -11,14 +11,14 @@ from django.template.loader import render_to_string
 
 
 def main_movie_list(request):
-    movie_list = MovieTable(Movie.objects.filter(imdb_rating__gt=6.9).order_by("-created_date"))
     if 'Year' in request.GET:
         movie_list = MovieTable(Movie.objects.filter(imdb_rating__gt=6.9).filter(year__gt=int(request.GET['Year'])-1).order_by("-created_date"))
     if 'Name' in request.GET:
         movie_list = MovieTable(Movie.objects.filter(imdb_rating__gt=6.9).filter(names__contains=request.GET['Name']).order_by("-created_date"))
     if 'Genre' in request.GET:
-        print (request)
         movie_list = MovieTable(Movie.objects.filter(imdb_rating__gt=6.9).filter(genre__contains=request.GET['Genre']).order_by("-created_date"))
+    else:
+        movie_list = MovieTable(Movie.objects.filter(imdb_rating__gt=6.9).order_by("-created_date"))
     RequestConfig(request, paginate={"per_page": 100}).configure(movie_list)
     main_form = MainForm()
     genre_form = GenreForm()
