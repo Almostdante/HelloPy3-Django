@@ -37,7 +37,10 @@ class Movie(models.Model):
 
     def check_imdb(self):
         js = json.decoder.JSONDecoder()
-        list_names = js.decode(self.names)
+        try:
+            list_names = js.decode(self.names)
+        except:
+            list_names = ['test']
         for name in list_names:
             if re.search('[а-яА-Я]+', name):
                 if self.russian_name == 'test':
@@ -54,6 +57,7 @@ class Movie(models.Model):
                 url_read = '{"Response":"False","Error":"Movie not found!"}'
             js = json.loads(url_read)
             if js[u'Response'] == 'True':
+                self.year = int(js['Year'])
                 self.director = str(js['Director'])
                 self.original_name = str(js['Title'])
                 if js['imdbRating'] != 'N/A':
@@ -72,8 +76,7 @@ class Movie(models.Model):
                 try:
                     url_read = urlopen(url, timeout=15).read().decode('utf8')
                 except (TimeoutError, timeout):
-                    print(url)
-                    print('OMDB timeout, new movie!')
+                    print('OMDB timeout, new movie!' + url)
                     continue
                 js = json.loads(url_read)
                 if js[u'Response'] == 'True':
@@ -90,8 +93,7 @@ class Movie(models.Model):
                     self.genre = str(js['Genre'])
                     break
                 else:
-                    print(url)
-                    print('Not found on OMDB')
+                    print('Not found on OMDB' + url)
         self.published_date = timezone.now()
         self.save()
         return self
@@ -107,7 +109,7 @@ class Torrent(models.Model):
     torrent_size = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     link_to_topic = models.URLField(default='')
     link_to_torrent_download = models.URLField(default='')
-    movie_id = models.ForeignKey(Movie)
+    movie_id = models.ForeignKey(Movie, on_delete= models.CASCADE)
     subtitles = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)
     torrent_id = models.IntegerField(default=0)

@@ -16,7 +16,7 @@ def send_update(recipient):
     to = []
     to.append(recipient)
     request=HttpRequest()
-    m= tables.MovieTable(models.Movie.objects.filter(created_date__gte=date.today() , imdb_rating__gt=6.9).order_by("-year"))
+    m= tables.MovieTable(models.Movie.objects.filter(created_date__gte=date.today() , imdb_rating__gt=6.9, year__gt=2016).order_by("-year"))
     RequestConfig(request).configure(m)
     msg_html = render_to_string('movie_list/email.html', context={'movies' :m}, request=request)
     msg_txt = 'txt'
