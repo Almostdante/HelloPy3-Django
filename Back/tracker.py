@@ -26,14 +26,14 @@ def parse_link(link):
     except (TimeoutError, timeout):
         print(link)
         print('Link parse on tracker fucked up!')
-        trnt_id = 0
+        trnt_id = 'tt'
         return trnt_id
     soup = bs4.BeautifulSoup(page, "html5lib")
     post = str(soup.findAll(['div', 'span'], {'class': ['postbody', 'post_body']}))
     try:
         trnt_id = str(re.search(r'(tt(\d{7}))', post).group(0))
     except:
-        trnt_id = 0
+        trnt_id = 'tt'
     return trnt_id
 
 
